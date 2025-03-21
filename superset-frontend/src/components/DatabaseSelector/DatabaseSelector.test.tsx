@@ -40,12 +40,12 @@ const createProps = (): DatabaseSelectorProps => ({
   isDatabaseSelectEnabled: true,
   readOnly: false,
   catalog: null,
-  schema: 'public',
+  schemas: ['public'],
   sqlLabMode: true,
   getDbList: jest.fn(),
   handleError: jest.fn(),
   onDbChange: jest.fn(),
-  onSchemaChange: jest.fn(),
+  onSchemasChange: jest.fn(),
 });
 
 const fakeDatabaseApiResult = {
@@ -221,7 +221,7 @@ test('Refresh should work', async () => {
     expect(fetchMock.calls(schemaApiRoute).length).toBe(1);
     expect(props.handleError).toHaveBeenCalledTimes(0);
     expect(props.onDbChange).toHaveBeenCalledTimes(0);
-    expect(props.onSchemaChange).toHaveBeenCalledTimes(0);
+    expect(props.onSchemasChange).toHaveBeenCalledTimes(0);
   });
 
   // click schema reload
@@ -232,7 +232,7 @@ test('Refresh should work', async () => {
     expect(fetchMock.calls(schemaApiRoute).length).toBe(2);
     expect(props.handleError).toHaveBeenCalledTimes(0);
     expect(props.onDbChange).toHaveBeenCalledTimes(0);
-    expect(props.onSchemaChange).toHaveBeenCalledTimes(0);
+    expect(props.onSchemasChange).toHaveBeenCalledTimes(0);
   });
 });
 
@@ -364,7 +364,7 @@ test('Sends the correct schema when changing the schema', async () => {
   });
   await waitFor(() => expect(fetchMock.calls(databaseApiRoute).length).toBe(1));
   rerender(<DatabaseSelector {...props} />);
-  expect(props.onSchemaChange).toHaveBeenCalledTimes(0);
+  expect(props.onSchemasChange).toHaveBeenCalledTimes(0);
   const select = screen.getByRole('combobox', {
     name: 'Select schema or type to search schemas',
   });
@@ -373,7 +373,7 @@ test('Sends the correct schema when changing the schema', async () => {
   const schemaOption = await screen.findAllByText('information_schema');
   userEvent.click(schemaOption[1]);
   await waitFor(() =>
-    expect(props.onSchemaChange).toHaveBeenCalledWith('information_schema'),
+    expect(props.onSchemasChange).toHaveBeenCalledWith('information_schema'),
   );
-  expect(props.onSchemaChange).toHaveBeenCalledTimes(1);
+  expect(props.onSchemasChange).toHaveBeenCalledTimes(1);
 });
