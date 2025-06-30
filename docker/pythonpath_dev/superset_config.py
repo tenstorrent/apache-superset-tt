@@ -106,6 +106,14 @@ CELERY_CONFIG = CeleryConfig
 FEATURE_FLAGS = {"ALERT_REPORTS": True}
 ALERT_REPORTS_NOTIFICATION_DRY_RUN = True
 WEBDRIVER_BASEURL = "http://superset:8088/"  # When using docker compose baseurl should be http://superset_app:8088/  # noqa: E501
+# Chromium seems to work better here than firefox
+WEBDRIVER_TYPE = "chrome"
+WEBDRIVER_OPTION_ARGS = [
+    "--headless=new",
+    "--disable-gpu",
+    "--no-sandbox", # Ensure Docker setup does not interfere with the permissions the browser needs
+    "--disable-dev-shm-usage",
+]
 # The base URL for the email report hyperlinks.
 WEBDRIVER_BASEURL_USER_FRIENDLY = WEBDRIVER_BASEURL
 SQLLAB_CTAS_NO_LIMIT = True
