@@ -101,7 +101,7 @@ interface TableSelectorProps {
   onSchemaChange?: (schema: string | string[]) => void;
   readOnly?: boolean;
   catalog?: string | null;
-  schema?: string;
+  schema?: string | string[];
   onEmptyResults?: (searchText?: string) => void;
   sqlLabMode?: boolean;
   tableValue?: string | string[];

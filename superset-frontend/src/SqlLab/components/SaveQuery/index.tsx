@@ -130,7 +130,7 @@ const SaveQuery = ({
     dbId: query.dbId ?? 0,
     sql: query.sql,
     catalog: query.catalog,
-    schema: normalizeSchema(query.schema),
+    schema: normalizeSchema(query.schema) || undefined,
     templateParams: query.templateParams,
     remoteId: query?.remoteId || undefined,
   });

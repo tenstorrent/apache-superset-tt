@@ -67,12 +67,6 @@ export function useKeywords(
     'sqleditor.extension.customAutocomplete',
   );
 
-  const customKeywords = useCustomKeywords?.({
-    queryEditorId: String(queryEditorId),
-    dbId,
-    catalog,
-    schema,
-  });
   const dispatch = useDispatch();
   const hasFetchedKeywords = useRef(false);
   // skipFetch is used to prevent re-evaluating memoized keywords
@@ -86,7 +80,14 @@ export function useKeywords(
     },
     { skip: skipFetch || !dbId },
   );
-  const normalizedSchema = normalizeSchema(schema);
+  const normalizedSchema = normalizeSchema(schema) || undefined;
+
+  const customKeywords = useCustomKeywords?.({
+    queryEditorId: String(queryEditorId),
+    dbId,
+    catalog,
+    schema: normalizedSchema,
+  });
   const { currentData: tableData } = useTablesQueryState(
     {
       dbId,
