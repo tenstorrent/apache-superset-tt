@@ -85,6 +85,7 @@ import ExploreCtasResultsButton from '../ExploreCtasResultsButton';
 import ExploreResultsButton from '../ExploreResultsButton';
 import HighlightedSql from '../HighlightedSql';
 import QueryStateLabel from '../QueryStateLabel';
+import { normalizeSchema } from 'src/SqlLab/utils/schemaUtils';
 
 enum LimitingFactor {
   Query = 'QUERY',
@@ -312,7 +313,7 @@ const ResultSet = ({
         dbId: query?.dbId,
         sql: query?.sql,
         templateParams: query?.templateParams,
-        schema: query?.schema,
+        schema: normalizeSchema(query?.schema),
       };
 
       const canExportData = findPermission(

@@ -41,6 +41,7 @@ import { logEvent } from 'src/logger/actions';
 import { newQueryTabName } from '../utils/newQueryTabName';
 import getInitialState from '../reducers/getInitialState';
 import { rehydratePersistedState } from '../utils/reduxStateToLocalStorageHelper';
+import { normalizeSchema, normalizeSchemaToArray } from '../utils/schemaUtils';
 
 export const RESET_STATE = 'RESET_STATE';
 export const ADD_QUERY_EDITOR = 'ADD_QUERY_EDITOR';
@@ -360,7 +361,7 @@ export function generateSql(databaseId, queryEditor, prompt) {
     const { sql } = getUpToDateQuery(getState(), queryEditor);
     return SupersetClient.post({
       endpoint: '/api/v1/sqllab/generate_sql/',
-      body: JSON.stringify({ database_id: databaseId, user_prompt: prompt, prior_context: sql, schemas: queryEditor.schema }),
+      body: JSON.stringify({ database_id: databaseId, user_prompt: prompt, prior_context: sql, schemas: normalizeSchemaToArray(queryEditor.schema) }),
       headers: { 'Content-Type': 'application/json' },
     })
       .then(({ json }) => {
@@ -396,7 +397,7 @@ export function runQuery(query, runPreviewOnly) {
       json: true,
       runAsync: query.runAsync,
       catalog: query.catalog,
-      schema: Array.isArray(query.schema) ? (query.schema.length > 0 ? query.schema[0] : "") : query.schema,
+      schema: normalizeSchema(query.schema) || "",
       sql: query.sql,
       sql_editor_id: query.sqlEditorId,
       tab: query.tab,
@@ -452,7 +453,7 @@ export function runQueryFromSqlEditor(
       sqlEditorId: qe.id,
       tab: qe.name,
       catalog: qe.catalog,
-      schema: Array.isArray(qe.schema) ? qe.schema.length > 0 ? qe.schema[0] : "" : qe.schema,
+      schema: normalizeSchema(qe.schema) || "",
       tempTable,
       templateParams: qe.templateParams,
       queryLimit: qe.queryLimit || defaultQueryLimit,
@@ -550,9 +551,14 @@ export function syncQueryEditor(queryEditor) {
     const localStorageQueries = Object.values(queries).filter(
       query => query.inLocalStorage && query.sqlEditorId === queryEditor.id,
     );
+    // Normalize schema to a single value for backend compatibility
+    const normalizedQueryEditor = {
+      ...queryEditor,
+      schema: normalizeSchema(queryEditor.schema),
+    };
     return SupersetClient.post({
       endpoint: '/tabstateview/',
-      postPayload: { queryEditor },
+      postPayload: { queryEditor: normalizedQueryEditor },
     })
       .then(({ json }) => {
         const newQueryEditor = {

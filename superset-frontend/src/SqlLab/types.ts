@@ -51,7 +51,7 @@ export interface QueryEditor {
   name: string;
   title?: string; // keep it optional for backward compatibility
   catalog?: string | null;
-  schema?: string;
+  schema?: string | string[]; // Can be either a single schema or an array for multi-select mode
   autorun: boolean;
   sql: string;
   remoteId: number | null;
@@ -160,3 +160,11 @@ export interface QueryCostEstimate {
   cost: Record<string, any>[];
   error: string;
 }
+
+// Re-export schema utilities for convenience
+export {
+  normalizeSchema,
+  formatSchemaForDisplay,
+  isMultiSchema,
+  normalizeSchemaToArray,
+} from './utils/schemaUtils';

@@ -38,12 +38,13 @@ import { api } from 'src/hooks/apiResources/queryApi';
 import { useDatabaseFunctionsQuery } from 'src/hooks/apiResources/databaseFunctions';
 import useEffectEvent from 'src/hooks/useEffectEvent';
 import { SqlLabRootState } from 'src/SqlLab/types';
+import { normalizeSchema } from 'src/SqlLab/utils/schemaUtils';
 
 type Params = {
   queryEditorId: string | number;
   dbId?: string | number;
   catalog?: string | null;
-  schema?: string;
+  schema?: string | string[];
 };
 
 const EMPTY_LIST = [] as typeof sqlKeywords;
@@ -85,14 +86,15 @@ export function useKeywords(
     },
     { skip: skipFetch || !dbId },
   );
+  const normalizedSchema = normalizeSchema(schema);
   const { currentData: tableData } = useTablesQueryState(
     {
       dbId,
       catalog,
-      schema,
+      schema: normalizedSchema,
       forceRefresh: false,
     },
-    { skip: skipFetch || !dbId || !schema },
+    { skip: skipFetch || !dbId || !normalizedSchema },
   );
 
   const { currentData: functionNames, isError } = useDatabaseFunctionsQuery(
@@ -126,11 +128,11 @@ export function useKeywords(
     tablesForColumnMetadata.forEach(table => {
       tableEndpoints.tableMetadata
         .select(
-          dbId && schema
+          dbId && normalizedSchema
             ? {
                 dbId,
                 catalog,
-                schema,
+                schema: normalizedSchema,
                 table,
               }
             : skipToken,
@@ -142,12 +144,12 @@ export function useKeywords(
         });
     });
     return [...columns];
-  }, [dbId, catalog, schema, apiState, tablesForColumnMetadata]);
+  }, [dbId, catalog, normalizedSchema, apiState, tablesForColumnMetadata]);
 
   const insertMatch = useEffectEvent((editor: Editor, data: any) => {
     if (data.meta === 'table') {
       dispatch(
-        addTable({ id: queryEditorId, dbId }, data.value, catalog, schema),
+        addTable({ id: queryEditorId, dbId }, data.value, catalog, normalizedSchema),
       );
     }
 

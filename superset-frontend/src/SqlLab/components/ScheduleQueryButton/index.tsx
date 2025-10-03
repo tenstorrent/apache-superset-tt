@@ -29,6 +29,7 @@ import ModalTrigger, { ModalTriggerRef } from 'src/components/ModalTrigger';
 import { Form, FormItem } from 'src/components/Form';
 import Button from 'src/components/Button';
 import getBootstrapData from 'src/utils/getBootstrapData';
+import { normalizeSchema } from 'src/SqlLab/utils/schemaUtils';
 
 const bootstrapData = getBootstrapData();
 const scheduledQueriesConf = bootstrapData?.common?.conf?.SCHEDULED_QUERIES;
@@ -82,7 +83,7 @@ const getValidator = () => {
 interface ScheduleQueryButtonProps {
   defaultLabel?: string;
   sql: string;
-  schema?: string;
+  schema?: string | string[];
   dbId?: number;
   animation?: boolean;
   onSchedule?: Function;
@@ -158,7 +159,7 @@ const ScheduleQueryButton: FunctionComponent<ScheduleQueryButtonProps> = ({
       label,
       description,
       db_id: dbId,
-      schema,
+      schema: normalizeSchema(schema),
       sql,
       extra_json: JSON.stringify({ schedule_info: formData }),
     };
