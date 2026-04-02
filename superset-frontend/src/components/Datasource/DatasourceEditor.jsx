@@ -162,6 +162,14 @@ const StyledButtonWrapper = styled.span`
   `}
 `;
 
+const sqlTooltipOptions = {
+  placement: 'topRight',
+  title: t(
+    'If changes are made to your SQL query, ' +
+      'columns in your dataset will be synced when saving the dataset.',
+  ),
+};
+
 const checkboxGenerator = (d, onChange) => (
   <CheckboxControl value={d} onChange={onChange} />
 );
@@ -1219,14 +1227,14 @@ class DatasourceEditor extends PureComponent {
                           <DatabaseSelector
                             db={datasource?.database}
                             catalog={datasource.catalog}
-                            schema={datasource.schema}
+                            schemas={datasource.schemas}
                             onCatalogChange={catalog =>
                               this.state.isEditMode &&
                               this.onDatasourcePropChange('catalog', catalog)
                             }
-                            onSchemaChange={schema =>
+                            onSchemasChange={schemas =>
                               this.state.isEditMode &&
-                              this.onDatasourcePropChange('schema', schema)
+                              this.onDatasourcePropChange('schemas', schemas)
                             }
                             onDbChange={database =>
                               this.state.isEditMode &&

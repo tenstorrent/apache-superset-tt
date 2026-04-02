@@ -21,7 +21,7 @@ jsDelivr CDN instead of raw.githubusercontent.com to avoid GitHub API
 rate limits (60 anonymous requests/hour/IP).
 
 jsDelivr is a multi‑CDN front for public GitHub repos and supports
-arbitrary paths including nested folders. It doesn’t use the GitHub REST API
+arbitrary paths including nested folders. It doesn't use the GitHub REST API
 and advertises unlimited bandwidth for open-source use.
 
 Example URL::

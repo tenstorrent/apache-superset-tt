@@ -20,6 +20,7 @@ import { useEffect, useCallback, useMemo, useState } from 'react';
 import { shallowEqual, useDispatch, useSelector } from 'react-redux';
 
 import { SqlLabRootState, Table } from 'src/SqlLab/types';
+import { normalizeSchema } from 'src/SqlLab/utils/schemaUtils';
 import {
   queryEditorSetDb,
   addTable,
@@ -44,6 +45,7 @@ import {
 } from 'src/utils/localStorageHelpers';
 import { noop } from 'lodash';
 import TableElement from '../TableElement';
+import { TableValue } from 'src/components/TableSelector';
 
 export interface SqlEditorLeftBarProps {
   queryEditorId: string;
@@ -93,7 +95,7 @@ const SqlEditorLeftBar = ({
   const tables = useMemo(
     () =>
       allSelectedTables.filter(
-        table => table.dbId === dbId && table.schema === schema,
+        table => table.dbId === dbId, // && table.schema === schema,
       ),
     [allSelectedTables, dbId, schema],
   );
@@ -124,22 +126,17 @@ const SqlEditorLeftBar = ({
   };
 
   const selectedTableNames = useMemo(
-    () => tables?.map(table => table.name) || [],
+    () => tables?.map(table => `${table.schema}.${table.name}`) || [],
     [tables],
   );
 
   const onTablesChange = (
-    tableNames: string[],
+    tableValues: TableValue[],
     catalogName: string | null,
-    schemaName: string,
   ) => {
-    if (!schemaName) {
-      return;
-    }
-
     const currentTables = [...tables];
-    const tablesToAdd = tableNames.filter(name => {
-      const index = currentTables.findIndex(table => table.name === name);
+    const tablesToAdd = tableValues.filter(tv => {
+      const index = currentTables.findIndex(table => table.name === tv.value);
       if (index >= 0) {
         currentTables.splice(index, 1);
         return false;
@@ -148,8 +145,13 @@ const SqlEditorLeftBar = ({
       return true;
     });
 
-    tablesToAdd.forEach(tableName => {
-      dispatch(addTable(queryEditor, tableName, catalogName, schemaName));
+    tablesToAdd.forEach(tableValue => {
+      // Use tableValue.schema if available, otherwise fall back to currently selected schema
+      // Normalize to string since schema can be string | string[] but backend expects string
+      const tableSchema = normalizeSchema(tableValue.schema || schema);
+      dispatch(
+        addTable(queryEditor, tableValue.value, catalogName, tableSchema),
+      );
     });
 
     dispatch(removeTables(currentTables));

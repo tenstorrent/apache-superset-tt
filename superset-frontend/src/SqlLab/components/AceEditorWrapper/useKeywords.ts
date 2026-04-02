@@ -38,12 +38,13 @@ import { api } from 'src/hooks/apiResources/queryApi';
 import { useDatabaseFunctionsQuery } from 'src/hooks/apiResources/databaseFunctions';
 import useEffectEvent from 'src/hooks/useEffectEvent';
 import { SqlLabRootState } from 'src/SqlLab/types';
+import { normalizeSchema } from 'src/SqlLab/utils/schemaUtils';
 
 type Params = {
   queryEditorId: string | number;
   dbId?: string | number;
   catalog?: string | null;
-  schema?: string;
+  schema?: string | string[];
   tabViewId?: string;
 };
 
@@ -67,12 +68,6 @@ export function useKeywords(
     'sqleditor.extension.customAutocomplete',
   );
 
-  const customKeywords = useCustomKeywords?.({
-    queryEditorId: String(queryEditorId),
-    dbId,
-    catalog,
-    schema,
-  });
   const dispatch = useDispatch();
   const hasFetchedKeywords = useRef(false);
   // skipFetch is used to prevent re-evaluating memoized keywords
@@ -86,14 +81,22 @@ export function useKeywords(
     },
     { skip: skipFetch || !dbId },
   );
+  const normalizedSchema = normalizeSchema(schema) || undefined;
+
+  const customKeywords = useCustomKeywords?.({
+    queryEditorId: String(queryEditorId),
+    dbId,
+    catalog,
+    schema: normalizedSchema,
+  });
   const { currentData: tableData } = useTablesQueryState(
     {
       dbId,
       catalog,
-      schema,
+      schema: normalizedSchema,
       forceRefresh: false,
     },
-    { skip: skipFetch || !dbId || !schema },
+    { skip: skipFetch || !dbId || !normalizedSchema },
   );
 
   const { currentData: functionNames, isError } = useDatabaseFunctionsQuery(
@@ -127,11 +130,11 @@ export function useKeywords(
     tablesForColumnMetadata.forEach(table => {
       tableEndpoints.tableMetadata
         .select(
-          dbId && schema
+          dbId && normalizedSchema
             ? {
                 dbId,
                 catalog,
-                schema,
+                schema: normalizedSchema,
                 table,
               }
             : skipToken,
@@ -143,7 +146,7 @@ export function useKeywords(
         });
     });
     return [...columns];
-  }, [dbId, catalog, schema, apiState, tablesForColumnMetadata]);
+  }, [dbId, catalog, normalizedSchema, apiState, tablesForColumnMetadata]);
 
   const insertMatch = useEffectEvent((editor: Editor, data: any) => {
     if (data.meta === 'table') {
@@ -152,7 +155,7 @@ export function useKeywords(
           { id: queryEditorId, dbId, tabViewId },
           data.value,
           catalog,
-          schema,
+          normalizedSchema,
           false, // Don't auto-expand/switch tabs when adding via autocomplete
         ),
       );

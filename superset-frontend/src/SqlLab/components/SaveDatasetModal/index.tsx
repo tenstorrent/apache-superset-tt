@@ -57,6 +57,7 @@ import {
 } from 'src/SqlLab/types';
 import { mountExploreUrl } from 'src/explore/exploreUtils';
 import { postFormData } from 'src/explore/exploreUtils/formData';
+import { normalizeSchema } from 'src/SqlLab/utils/schemaUtils';
 import { URL_PARAMS } from 'src/constants';
 import { isEmpty } from 'lodash';
 
@@ -342,7 +343,7 @@ export const SaveDatasetModal = ({
         sql: datasource.sql,
         dbId: datasource.dbId || datasource?.database?.id,
         catalog: datasource?.catalog,
-        schema: datasource?.schema,
+        schema: normalizeSchema(datasource?.schema),
         templateParams,
         datasourceName: datasetName,
       }),

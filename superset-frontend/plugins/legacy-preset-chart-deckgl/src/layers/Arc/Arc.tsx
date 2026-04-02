@@ -79,7 +79,7 @@ export const getLayer: GetLayerType<ArcLayer> = function ({
         return [sc.r, sc.g, sc.b, 255 * sc.a];
       }
 
-      return d.targetColor || d.color;
+      return d.sourceColor || d.color;
     },
     getTargetColor: (d: any) => {
       if (colorSchemeType === COLOR_SCHEME_TYPES.fixed_color) {

@@ -46,10 +46,10 @@ const getTableMockFunction = () =>
   ({
     count: 4,
     result: [
-      { label: 'table_a', value: 'table_a' },
-      { label: 'table_b', value: 'table_b' },
-      { label: 'table_c', value: 'table_c' },
-      { label: 'table_d', value: 'table_d' },
+      { label: 'table_a', value: 'table_a', schema: 'test_schema' },
+      { label: 'table_b', value: 'table_b', schema: 'test_schema' },
+      { label: 'table_c', value: 'table_c', schema: 'test_schema' },
+      { label: 'table_d', value: 'table_d', schema: 'test_schema' },
     ],
   }) as any;
 

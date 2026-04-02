@@ -23,7 +23,7 @@ from typing import Any
 
 from flask_appbuilder.models.sqla import Model
 
-from superset import db, is_feature_enabled
+from superset import db, is_feature_enabled, security_manager
 from superset.commands.base import BaseCommand
 from superset.commands.database.exceptions import (
     DatabaseExistsValidationError,
@@ -64,6 +64,8 @@ class UpdateDatabaseCommand(BaseCommand):
 
         if not self._model:
             raise DatabaseNotFoundError()
+
+        logger.info("Updating database with content:\n%s", self._properties)
 
         self.validate()
 

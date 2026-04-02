@@ -54,7 +54,7 @@ export interface QueryEditor {
   name: string;
   title?: string; // keep it optional for backward compatibility
   catalog?: string | null;
-  schema?: string;
+  schema?: string | string[]; // Can be either a single schema or an array for multi-select mode
   autorun: boolean;
   sql: string;
   remoteId: number | null;
@@ -70,6 +70,7 @@ export interface QueryEditor {
   southPercent?: number;
   updatedAt?: number;
   cursorPosition?: CursorPosition;
+  queryGenerator?: QueryGenerator;
   isDataset?: boolean;
   tabViewId?: string;
 }
@@ -96,6 +97,11 @@ export interface Table {
   initialized?: boolean;
   inLocalStorage?: boolean;
   persistData?: TableMetaData;
+}
+
+export interface QueryGenerator {
+  isGeneratingQuery: boolean;
+  prompt: string;
 }
 
 export type SqlLabRootState = {
@@ -159,3 +165,11 @@ export interface QueryCostEstimate {
   cost: Record<string, any>[];
   error: string;
 }
+
+// Re-export schema utilities for convenience
+export {
+  normalizeSchema,
+  formatSchemaForDisplay,
+  isMultiSchema,
+  normalizeSchemaToArray,
+} from './utils/schemaUtils';

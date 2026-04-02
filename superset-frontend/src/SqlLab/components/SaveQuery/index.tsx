@@ -43,6 +43,7 @@ import {
   LOG_ACTIONS_SQLLAB_CREATE_CHART,
   LOG_ACTIONS_SQLLAB_SAVE_QUERY,
 } from 'src/logger/LogUtils';
+import { normalizeSchema } from 'src/SqlLab/utils/schemaUtils';
 import { ModalTitleWithIcon } from 'src/components/ModalTitleWithIcon';
 
 interface SaveQueryProps {
@@ -136,7 +137,7 @@ const SaveQuery = ({
     dbId: query.dbId ?? 0,
     sql: query.sql,
     catalog: query.catalog,
-    schema: query.schema,
+    schema: normalizeSchema(query.schema) || undefined,
     templateParams: query.templateParams,
     remoteId: query?.remoteId || undefined,
   });

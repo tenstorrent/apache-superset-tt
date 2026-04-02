@@ -26,8 +26,8 @@ from slack_sdk.http_retry.builtin_handlers import RateLimitErrorRetryHandler
 
 from superset import feature_flag_manager
 from superset.exceptions import SupersetException
-from superset.extensions import cache_manager
 from superset.reports.schemas import SlackChannelSchema
+from superset.extensions import cache_manager
 from superset.utils import cache as cache_util
 from superset.utils.backports import StrEnum
 from superset.utils.core import recipients_string_to_list

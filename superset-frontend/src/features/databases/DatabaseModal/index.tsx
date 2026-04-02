@@ -11,8 +11,8 @@
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
- * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
- * KIND, either express or implied.  See the License for the
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS
+ * OF ANY KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
  * under the License.
  */
@@ -75,9 +75,11 @@ import {
   CatalogObject,
   Engines,
   ExtraJson,
-  CustomTextType,
   DatabaseParameters,
+  LlmConnection,
+  LlmContextOptions,
 } from '../types';
+import AIAssistantOptions from './AIAssistantOptions';
 import ExtraOptions from './ExtraOptions';
 import SqlAlchemyForm from './SqlAlchemyForm';
 import DatabaseConnectionForm from './DatabaseConnectionForm';
@@ -174,10 +176,14 @@ export enum ActionType {
   QueryChange,
   RemoveTableCatalogSheet,
   Reset,
+  SelectChange,
+  SwitchChange,
   TextChange,
   ParametersSSHTunnelChange,
   SetSSHTunnelLoginMethod,
   RemoveSSHTunnelConfig,
+  LlmConnectionChange,
+  LlmContextOptionsChange,
 }
 
 export enum AuthType {
@@ -202,6 +208,8 @@ export type DBReducerActionType =
         | ActionType.EncryptedExtraInputChange
         | ActionType.TextChange
         | ActionType.QueryChange
+        | ActionType.SelectChange
+        | ActionType.SwitchChange
         | ActionType.InputChange
         | ActionType.EditorChange
         | ActionType.ParametersChange
@@ -248,6 +256,14 @@ export type DBReducerActionType =
       payload: {
         login_method: AuthType;
       };
+    }
+  | {
+      type: ActionType.LlmConnectionChange;
+      payload: LlmConnection;
+    }
+  | {
+      type: ActionType.LlmContextOptionsChange;
+      payload: LlmContextOptions;
     };
 
 const StyledBtns = styled.div`
@@ -431,6 +447,16 @@ export function dbReducer(
           [action.payload.name]: action.payload.value,
         },
       };
+    case ActionType.SelectChange:
+      return {
+        ...trimmedState,
+        [action.payload.target || action.payload.name]: action.payload.value,
+      };
+    case ActionType.SwitchChange:
+      return {
+        ...trimmedState,
+        [action.payload.name]: action.payload.checked,
+      };
     case ActionType.SetSSHTunnelLoginMethod: {
       let ssh_tunnel = {};
       if (trimmedState?.ssh_tunnel) {
@@ -505,6 +531,16 @@ export function dbReducer(
       return {
         ...trimmedState,
         [action.payload.name]: action.payload.value,
+      };
+    case ActionType.LlmConnectionChange:
+      return {
+        ...trimmedState,
+        llm_connection: { ...trimmedState.llm_connection, ...action.payload },
+      };
+    case ActionType.LlmContextOptionsChange:
+      return {
+        ...trimmedState,
+        llm_context_options: { ...trimmedState.llm_context_options, ...action.payload },
       };
     case ActionType.Fetched:
       // convert query to a string and store in query_input
@@ -758,7 +794,7 @@ const DatabaseModal: FunctionComponent<DatabaseModalProps> = ({
   const onChange = useCallback(
     (
       type: DBReducerActionType['type'],
-      payload: CustomTextType | DBReducerPayloadType,
+      payload: any,
     ) => {
       setDB({ type, payload } as DBReducerActionType);
     },
@@ -844,6 +880,12 @@ const DatabaseModal: FunctionComponent<DatabaseModalProps> = ({
     }
     // Clone DB object
     const dbToUpdate = { ...(db || {}) };
+
+    // If the database has no extra set, set it to an empty object to ensure the
+    // save request doesn't fail
+    if (!dbToUpdate.extra) {
+      dbToUpdate.extra = "{}";
+    }
 
     if (dbToUpdate.configuration_method === ConfigurationMethod.DynamicForm) {
       // Validate DB before saving
@@ -2067,6 +2109,21 @@ const DatabaseModal: FunctionComponent<DatabaseModalProps> = ({
                 onExtraEditorChange={(payload: { name: string; json: any }) => {
                   onChange(ActionType.ExtraEditorChange, payload);
                 }}
+              />
+            ),
+          },
+          {
+            key: '3',
+            label: <span>{t('AI Assistant')}</span>,
+            children: (
+              <AIAssistantOptions
+                db={db as DatabaseObject}
+                onLlmConnectionChange={(connection: LlmConnection) =>
+                  onChange(ActionType.LlmConnectionChange, connection)
+                }
+                onLlmContextOptionsChange={(options: LlmContextOptions) =>
+                  onChange(ActionType.LlmContextOptionsChange, options)
+                }
               />
             ),
           },

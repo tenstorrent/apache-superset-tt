@@ -88,6 +88,7 @@ import {
 import { Icons } from '@superset-ui/core/components/Icons';
 import { findPermission } from 'src/utils/findPermission';
 import { ensureAppRoot } from 'src/utils/pathUtils';
+import { normalizeSchema } from 'src/SqlLab/utils/schemaUtils';
 import ExploreCtasResultsButton from '../ExploreCtasResultsButton';
 import ExploreResultsButton from '../ExploreResultsButton';
 import HighlightedSql from '../HighlightedSql';
@@ -322,7 +323,7 @@ const ResultSet = ({
         dbId: query?.dbId,
         sql: query?.sql,
         templateParams: query?.templateParams,
-        schema: query?.schema,
+        schema: normalizeSchema(query?.schema),
       };
 
       const canExportData = findPermission(

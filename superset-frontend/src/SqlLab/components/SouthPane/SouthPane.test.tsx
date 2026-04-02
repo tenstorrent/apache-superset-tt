@@ -151,6 +151,7 @@ test('should render tabs for table metadata view', () => {
     expect(tabs[index + 2]).toHaveTextContent(`${schema}.${name}`);
   });
 });
+
 test('should remove tab', async () => {
   const { container } = await render(<SouthPane {...mockedProps} />, {
     useRedux: true,

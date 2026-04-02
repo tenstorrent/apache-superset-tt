@@ -232,6 +232,12 @@ export const StyledInputContainer = styled.div`
       padding-top: ${theme.sizeUnit * 2}px;
     }
 
+    .control-label {
+      color: ${theme.colorText};
+      font-size: ${theme.fontSizeSM}px;
+      margin-bottom: ${theme.sizeUnit * 2}px;
+    }
+
     .input-container {
       display: flex;
       align-items: top;
@@ -271,6 +277,8 @@ export const StyledInputContainer = styled.div`
       border-style: none;
       border: 1px solid ${theme.colorBorder};
       border-radius: ${theme.borderRadius}px;
+      background-color: ${theme.colorBgContainer};
+      color: ${theme.colorText};
 
       &[name='name'] {
         flex: 0 1 auto;
@@ -522,5 +530,97 @@ export const StyledUploadWrapper = styled.div`
 
   .ant-upload-list-item-card-actions {
     display: none;
+  }
+`;
+
+// AI Assistant styles (added for LLM integration features)
+export const antdCollapseStyles = (theme: SupersetTheme) => css`
+  .ant-collapse-header {
+    padding-top: ${theme.sizeUnit * 3.5}px;
+    padding-bottom: ${theme.sizeUnit * 2.5}px;
+
+    .anticon.ant-collapse-arrow {
+      top: calc(50% - 6px);
+    }
+    .helper {
+      color: ${theme.colorTextSecondary};
+    }
+  }
+`;
+
+export const StyledContextWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  margin-bottom: ${({ theme }) => theme.sizeUnit * 4}px;
+  gap: ${({ theme }) => theme.sizeUnit * 2}px;
+`;
+
+export const StyledLlmSwitch = styled.div`
+  ${({ theme }) => css`
+    display: flex;
+    align-items: center;
+    margin-top: ${theme.sizeUnit * 6}px;
+    margin-left: ${theme.sizeUnit * 4}px;
+    margin-bottom: ${theme.sizeUnit * 6}px;
+
+    .control-label {
+      font-family: ${theme.fontFamily};
+      font-size: ${theme.fontSize}px;
+      margin-right: ${theme.sizeUnit * 4}px;
+    }
+
+    .input-container {
+      display: flex;
+      align-items: center;
+
+      label {
+        margin-left: ${theme.sizeUnit * 2}px;
+        margin-top: ${theme.sizeUnit * 2}px;
+      }
+    }
+  `}
+`;
+
+export const StyledTokenEstimate = styled.div`
+  border: 1px solid ${({ theme }) => theme.colorBorder};
+  border-radius: ${({ theme }) => theme.borderRadius}px;
+  padding: ${({ theme }) => theme.sizeUnit * 3}px;
+  font-size: ${({ theme }) => theme.fontSizeSM}px;
+  background-color: ${({ theme }) => theme.colorBgLayout};
+
+  .warning {
+    color: ${({ theme }) => theme.colorError};
+  }
+`;
+
+export const StyledContextError = styled.div`
+  border: 1px solid ${({ theme }) => theme.colorError};
+  border-radius: ${({ theme }) => theme.borderRadius}px;
+  padding: ${({ theme }) => theme.sizeUnit * 3}px;
+  font-size: ${({ theme }) => theme.fontSizeSM}px;
+  background-color: ${({ theme }) => theme.colorErrorBg || '#fee'};
+  color: ${({ theme }) => theme.colorError};
+`;
+
+export const StyledTopKForm = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+
+  .input-container {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    margin-bottom: ${({ theme }) => theme.sizeUnit * 4}px;
+  }
+
+  .control-label {
+    margin-top: ${({ theme }) => theme.sizeUnit * 2}px;
+    margin-right: ${({ theme }) => theme.sizeUnit * 2}px;
+    width: ${({ theme }) => theme.sizeUnit * 20}px;
+  }
+
+  .helper {
+    margin-top: 0;
   }
 `;
