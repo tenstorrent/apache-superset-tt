@@ -56,20 +56,16 @@ class AnthropicLlm(BaseLlm):
     @staticmethod
     def get_models():
         return {
-            'claude-3-5-haiku-latest': {
-                'name': 'Claude Haiku 3.5',
+            'claude-haiku-4-5': {
+                'name': 'Claude Haiku 4.5',
                 'input_token_limit': 200000
             },
-            'claude-sonnet-4-0': {
-                'name': 'Claude Sonnet 4',
+            'claude-sonnet-4-6': {
+                'name': 'Claude Sonnet 4.6',
                 'input_token_limit': 200000
             },
-            'claude-3-7-sonnet-latest': {
-                'name': 'Claude Sonnet 3.7',
-                'input_token_limit': 200000
-            },
-            'claude-opus-4-0': {
-                'name': 'Claude Opus 4',
+            'claude-opus-4-6': {
+                'name': 'Claude Opus 4.6',
                 'input_token_limit': 200000
             },
         }

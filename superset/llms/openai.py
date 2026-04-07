@@ -56,25 +56,21 @@ class OpenAiLlm(BaseLlm):
     @staticmethod
     def get_models():
         return {
-            'gpt-4.1-nano': {
-                'name': 'GPT-4.1 nano',
-                'input_token_limit': 1047576
+            'gpt-5.4-nano': {
+                'name': 'GPT-5.4 nano',
+                'input_token_limit': 400000
             },
-            'gpt-4.1-mini': {
-                'name': 'GPT-4.1 mini',
-                'input_token_limit': 1047576
+            'gpt-5.4-mini': {
+                'name': 'GPT-5.4 mini',
+                'input_token_limit': 400000
             },
-            'o4-mini': {
-                'name': 'o4-mini',
-                'input_token_limit': 200000
+            'gpt-5.4': {
+                'name': 'GPT-5.4',
+                'input_token_limit': 1050000
             },
-            'o3': {
-                'name': 'o3',
-                'input_token_limit': 200000
-            },
-            'gpt-4o-mini': {
-                'name': 'GPT-4o mini',
-                'input_token_limit': 128000
+            'gpt-5.4-pro': {
+                'name': 'GPT-5.4 Pro',
+                'input_token_limit': 1050000
             },
         }
 
