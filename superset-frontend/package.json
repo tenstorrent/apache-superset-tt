@@ -367,7 +367,7 @@
     "webpack-visualizer-plugin2": "^1.1.0"
   },
   "engines": {
-    "node": "^20.16.0",
+    "node": "^24.22.1",
     "npm": "^10.8.1"
   },
   "overrides": {
